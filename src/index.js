@@ -3,6 +3,7 @@ const app = express()
 const port = process.env.PORT || 8080;
 const cartRoutes = require('./routes/cart.routes');
 const productRoutes = require('./routes/product.routes');
+const errorRoutes = require('./routes/error.routes');
 
 app.use(express.json());
 
@@ -11,6 +12,9 @@ app.use('/api', [
     productRoutes,
     cartRoutes
 ]);
+
+// Add routes for http error request
+app.use(errorRoutes);
 
 // Server app
 app.listen(port, () => {
