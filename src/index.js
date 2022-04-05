@@ -5,7 +5,11 @@ const cartRoutes = require('./routes/cart.routes');
 const productRoutes = require('./routes/product.routes');
 const errorRoutes = require('./routes/error.routes');
 
+// App config
 app.use(express.json());
+
+// Serve static files from /public folder
+app.use(express.static('public'));
 
 // Add routes to API
 app.use('/api', [
