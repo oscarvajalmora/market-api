@@ -23,9 +23,42 @@
 
             <div class="col-12 col-md-8 px-5 mb-5" id="">
                 <div class="card shadow">
-                    <div class="card-header">Completa el siguiente formulario para agregar un nuevo producto</div>
+                    <div class="card-header">Ve a continuación el detalle de tu carrito</div>
                     <div class="card-body">
-                        
+                        <div class="row">
+                            <div class="col">
+                                <form id="add-product-form">
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" name="productId" placeholder="Ingresa el ID del producto">
+                                        <button type="submit" class="btn btn-outline-secondary" type="button" id="add-product-button">Agregar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <table class="table" id="cart-detail">
+                                    <thead>
+                                        <th>ID</th>
+                                        <td>Nombre</td>
+                                        <td>Código</td>
+                                        <td>Precio</td>
+                                        <td></td>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>12</td>
+                                            <td>Coca-Cola</td>
+                                            <td>1928371</td>
+                                            <td>3900</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-danger">Eliminar</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -36,6 +69,64 @@
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <script>
+
+        let cartProducts;
+        let cartId;
+
+        const initCart = () => {
+            // const actualCartId = localStorage.getItem('cartId');
+            if(!cartId) {
+                fetch('/api/carrito', {
+                    method: 'POST'
+                })
+                    .then(result => result.json())
+                    .then(data => {
+                        cartId = data.cartId;
+                    })
+                    .catch(error => console.log(error));
+            }
+        }
+
+        const gerCartProducts = async (cartId) => {
+            const response = await fetch(`/api/carrito/${cartId}/productos`);
+            data = response.json();
+            cartProducts = data.body;
+
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const formElement = document.querySelector('#add-product-form');
+
+            // Init cart
+            initCart();
+
+            // 
+
+            // Add product event
+            formElement.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const productId = event.target.productId;
+
+                fetch(`/api/carrito/${cartId}/productos`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        productId: productId
+                    })
+                }).then(async () => {
+                    await gerCartProducts(cartId);
+                    console.log(cartProducts)
+                }).catch(error => console.log(error));
+            });
+
+        });
+    </script>
+
 </body>
 
 </html>
