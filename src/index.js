@@ -4,6 +4,8 @@ const port = process.env.PORT || 8080;
 const cartRoutes = require('./routes/cart.routes');
 const productRoutes = require('./routes/product.routes');
 
+app.use(express.json());
+
 // Add routes to API
 app.use('/api', [
     productRoutes,
